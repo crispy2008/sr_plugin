@@ -1,0 +1,8 @@
+[
+{
+  "directory": "/Users/evelynhou/illixr_files/sr_plugin/build",
+  "command": "/usr/bin/c++ -Dsr_plugin_EXPORTS -I/include -g -std=gnu++17 -arch arm64 -fPIC -o CMakeFiles/sr_plugin.dir/sr_plugin.cpp.o -c /Users/evelynhou/illixr_files/sr_plugin/sr_plugin.cpp",
+  "file": "/Users/evelynhou/illixr_files/sr_plugin/sr_plugin.cpp",
+  "output": "CMakeFiles/sr_plugin.dir/sr_plugin.cpp.o"
+}
+]

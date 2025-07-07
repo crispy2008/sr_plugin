@@ -1,0 +1,1 @@
+/usr/bin/c++ -g -arch arm64 -dynamiclib -Wl,-headerpad_max_install_names -o libsr_plugin.dylib -install_name @rpath/libsr_plugin.dylib CMakeFiles/sr_plugin.dir/sr_plugin.cpp.o
