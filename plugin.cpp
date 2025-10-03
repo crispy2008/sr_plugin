@@ -34,29 +34,53 @@ struct RecordData {
     , transcript_publisher_{switchboard_->get_writer<string_data>("transcript_topic")} {}
 
 void sr_plugin::start() {
-
-    const std::string audio_file = "/scratch/bmishra3/dog.wav"; // replace with your audio file path
+    record();
 
     httplib::Client cli("http://127.0.0.1:9999");
+    std::ifstream f_path("/scratch/yuanyi2/ILLIXR/plugins/sr_plugin/paths.txt");
+    if (f_path.is_open()) {
+    std::string audio_path;
+    while (std::getline(f_path, audio_path)) {
+        httplib::MultipartFormDataItems items = {
+        { "file", audio_file },
+        { "temperature", "0.0" },
+        { "temperature_inc", "0.2"},
+        { "response_format", "text" }
+        };
+        auto res = cli.Post("/inference", items);
+        // std::cout << "Response status after POST: " << res->status << std::endl;
+        if (res->status != 200) {
+            std::cerr << "Error: " << res->status << " - " << res->body << std::endl;
+            return;
+        }
+        std::cout << "Transcript: " << res->body << std::endl;
 
-    httplib::MultipartFormDataItems items = {
-    { "file", audio_file },
-    { "temperature", "0.0" },
-    { "temperature_inc", "0.2"},
-    { "response_format", "text" }
-    };
-
-    auto res = cli.Post("/inference", items);
-    // std::cout << "Response status after POST: " << res->status << std::endl;
-    if (res->status != 200) {
-        std::cerr << "Error: " << res->status << " - " << res->body << std::endl;
-        return;
+        string_data data{res->body};
+        transcript_publisher_.put(std::make_shared<string_data>(data));
     }
-    std::cout << "Transcript: " << res->body << std::endl;
+    f_path.close();
+    } else {
+    // Handle the error if the file could not be opened
+    std::cerr << "Error: Unable to open file " << std::endl;
+    }
 
-    string_data data{res->body};
-    transcript_publisher_.put(std::make_shared<string_data>(data));
-    std::cout << "record:" << record() << std::endl;
+    // httplib::MultipartFormDataItems items = {
+    // { "file", audio_file },
+    // { "temperature", "0.0" },
+    // { "temperature_inc", "0.2"},
+    // { "response_format", "text" }
+    // };
+
+    // auto res = cli.Post("/inference", items);
+    // // std::cout << "Response status after POST: " << res->status << std::endl;
+    // if (res->status != 200) {
+    //     std::cerr << "Error: " << res->status << " - " << res->body << std::endl;
+    //     return;
+    // }
+    // std::cout << "Transcript: " << res->body << std::endl;
+
+    // string_data data{res->body};
+    // transcript_publisher_.put(std::make_shared<string_data>(data));
 }
 
 namespace ILLIXR {
